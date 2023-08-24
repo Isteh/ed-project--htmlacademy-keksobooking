@@ -92,4 +92,13 @@ const setFiltersClickHandler = (cb) => {
   });
 };
 
-export { filterSimilarOffer, setFiltersClickHandler };
+const clearCurrentFilters = () => {
+  Array.from(mapFilters.querySelectorAll('select')).map(
+    (item) => (item.value = 'any')
+  );
+  Array.from(mapFilters.querySelectorAll('input[type=checkbox]')).map(
+    (item) => (item.checked = false)
+  );
+};
+
+export { filterSimilarOffer, setFiltersClickHandler, clearCurrentFilters};

@@ -1,4 +1,5 @@
 import { sendData } from './api.js';
+import { clearCurrentFilters } from './filters.js';
 import { setToStartPosition } from './map.js';
 import { clearPreviewImgs, setFileChooserHandler } from './preshow-imgs.js';
 import { showFormErrorMessage, showFormSuccessMessage } from './utils.js';
@@ -114,36 +115,41 @@ adForm
 const resetForm = () => {
   adForm.reset();
   setToStartPosition();
+  clearCurrentFilters();
   adFormPristine.reset();
   clearPreviewImgs(avatarPreview);
   clearPreviewImgs(offerPreview);
 };
 
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  const submit = adForm.querySelector('.ad-form__submit');
+const setFormControlHandler = (cb) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const submit = adForm.querySelector('.ad-form__submit');
 
-  const isValid = adFormPristine.validate();
-  if (isValid) {
-    submit.disabled = true;
-    sendData(
-      () => {
-        submit.disabled = false;
-        resetForm();
-        showFormSuccessMessage();
-      },
-      () => {
-        submit.disabled = false;
-        showFormErrorMessage();
-      },
-      new FormData(evt.target)
-    );
-  }
-});
+    const isValid = adFormPristine.validate();
+    if (isValid) {
+      submit.disabled = true;
+      sendData(
+        () => {
+          submit.disabled = false;
+          resetForm();
+          cb();
+          showFormSuccessMessage();
+        },
+        () => {
+          submit.disabled = false;
+          showFormErrorMessage();
+        },
+        new FormData(evt.target)
+      );
+    }
+  });
 
-adForm.querySelector('.ad-form__reset').addEventListener('click', (evt) => {
-  evt.preventDefault();
-  resetForm();
-});
+  adForm.querySelector('.ad-form__reset').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    resetForm();
+    cb();
+  });
+};
 
-export { adFormPristine };
+export { adFormPristine, setFormControlHandler };
