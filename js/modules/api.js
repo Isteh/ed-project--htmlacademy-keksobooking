@@ -1,7 +1,7 @@
 import { showMessage } from './utils.js';
 
 const getData = (onSuccess) => {
-  fetch('https://25.javascript.htmlacademy.pro/kekstagram/data')
+  fetch('https://25.javascript.htmlacademy.pro/keksobooking/data')
     .then((response) => {
       if (response.ok) {
         return response.json();
